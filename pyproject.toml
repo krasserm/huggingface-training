@@ -1,0 +1,41 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "training"
+version = "0.0.1"
+description = "Experiments with Hugging Face training tools"
+package-mode = false
+readme = "README.md"
+license = "Apache-2.0"
+authors = ["Martin Krasser <krasserm@googlemail.com>"]
+
+[tool.poetry.dependencies]
+accelerate = "^0.31.0"
+datasets = "^2.19"
+deepspeed = "^0.14.2"
+peft = "^0.11.1"
+python = "^3.10,<3.13"
+torch = "~2.2"
+transformers = "^4.41"
+trl = "^0.9.4"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.7"
+invoke = "^2.2"
+pytest = "^8.2"
+
+[tool.ruff]
+line-length = 120
+exclude = []
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["F401"]
+
+[[tool.mypy.overrides]]
+module = ["requests"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+# ...
