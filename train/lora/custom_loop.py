@@ -3,6 +3,7 @@
 import evaluate
 import torch
 from datasets import DatasetDict
+from peft import LoraConfig
 from torch.utils.data import DataLoader
 from torch.optim import AdamW
 from tqdm.auto import tqdm
@@ -10,14 +11,22 @@ from transformers import AutoModelForSequenceClassification, get_scheduler
 
 
 if __name__ == "__main__":
-    small_datasets = DatasetDict.load_from_disk("dataset/yelp_review_small")
-    small_train_dataset = small_datasets["train"]
-    small_eval_dataset = small_datasets["test"]
+    dataset = DatasetDict.load_from_disk("data/yelp_review_bert")
 
-    train_dataloader = DataLoader(small_train_dataset, shuffle=True, batch_size=8)
-    eval_dataloader = DataLoader(small_eval_dataset, batch_size=8)
+    train_dataloader = DataLoader(dataset["train"], shuffle=True, batch_size=8)
+    eval_dataloader = DataLoader(dataset["test"], batch_size=8)
+
+    config = LoraConfig(
+        r=16,
+        lora_alpha=32,
+        lora_dropout=0.05,
+        task_type="SEQ_CLS",
+        target_modules=["q_proj", "v_proj"],
+        modules_to_save=["score"],
+    )
 
     model = AutoModelForSequenceClassification.from_pretrained("google-bert/bert-base-cased", num_labels=5)
+    model.add_adapter(config)
 
     num_epochs = 3
     num_steps = num_epochs * len(train_dataloader)
@@ -57,3 +66,5 @@ if __name__ == "__main__":
 
     eval_result = metric.compute()
     print(eval_result)
+
+    model.save_pretrained("output/lora/custom_loop")

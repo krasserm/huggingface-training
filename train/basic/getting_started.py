@@ -34,11 +34,13 @@ if __name__ == "__main__":
         return metric.compute(predictions=predictions, references=labels)
 
     training_args = TrainingArguments(
-        output_dir="output/getting_started",
+        output_dir="output/basic/getting_started",
         learning_rate=2e-5,
         per_device_train_batch_size=8,
         per_device_eval_batch_size=8,
         num_train_epochs=2,
+        save_total_limit=2,
+        save_strategy="epoch",
         eval_strategy="epoch",
     )
 
@@ -56,3 +58,4 @@ if __name__ == "__main__":
 
     # uses all GPUs by default
     trainer.train()
+    trainer.save_model("output/basic/getting_started")
