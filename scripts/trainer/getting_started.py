@@ -15,6 +15,7 @@ from transformers import (
 
 if __name__ == "__main__":
     repo_id = "distilbert/distilbert-base-uncased"
+    output_path = "output/trainer/getting_started"
 
     model = AutoModelForSequenceClassification.from_pretrained(repo_id)
     tokenizer = AutoTokenizer.from_pretrained(repo_id)
@@ -34,7 +35,7 @@ if __name__ == "__main__":
         return metric.compute(predictions=predictions, references=labels)
 
     training_args = TrainingArguments(
-        output_dir="output/basic/getting_started",
+        output_dir=output_path,
         learning_rate=2e-5,
         per_device_train_batch_size=8,
         per_device_eval_batch_size=8,
@@ -58,4 +59,4 @@ if __name__ == "__main__":
 
     # uses all GPUs by default
     trainer.train()
-    trainer.save_model("output/basic/getting_started")
+    trainer.save_model(output_path)

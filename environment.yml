@@ -1,4 +1,4 @@
-name: sandbox-training
+name: huggingface-training
 channels:
   - pytorch
   - nvidia

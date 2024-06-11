@@ -16,13 +16,16 @@ if __name__ == "__main__":
     train_dataloader = DataLoader(dataset["train"], shuffle=True, batch_size=8)
     eval_dataloader = DataLoader(dataset["test"], batch_size=8)
 
+    # modules_to_save=["classifier"] added here because
+    # model.add_adapter() doesn't automatically add it,
+    # in contrast to get_peft_model()
     config = LoraConfig(
         r=16,
         lora_alpha=32,
         lora_dropout=0.05,
         task_type="SEQ_CLS",
-        target_modules=["q_proj", "v_proj"],
-        modules_to_save=["score"],
+        target_modules=["query", "value"],
+        modules_to_save=["classifier"],
     )
 
     model = AutoModelForSequenceClassification.from_pretrained("google-bert/bert-base-cased", num_labels=5)

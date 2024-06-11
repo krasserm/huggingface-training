@@ -3,9 +3,9 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "training"
+name = "huggingface-training"
 version = "0.0.1"
-description = "Experiments with Hugging Face training tools"
+description = "Whirlwind tour through model training with Hugging Face tools"
 package-mode = false
 readme = "README.md"
 license = "Apache-2.0"
