@@ -11,6 +11,9 @@ conda activate huggingface-training
 poetry install
 invoke precommit-install
 
+# https://github.com/Dao-AILab/flash-attention
+pip install flash-attn --no-build-isolation
+
 export PYTHONPATH=.
 ```
 
@@ -68,12 +71,37 @@ accelerate launch --config_file accelerate_config.yaml scripts/lora/custom_loop_
 
 This uses DDP to train the model (DeepSpeed or FSDP are not enabled in `accelerate_config.yaml`)
 
+## Attention
+
+Examples how to enforce usage of different scaled dot product attention (SDPA) implementations. The following enforces usage of the [FlashAttention-2](https://github.com/Dao-AILab/flash-attention) implementation:
+
+```shell
+accelerate launch --config_file accelerate_config.yaml scripts/sdpa/flash_attention.py
+```
+
+This one enforces usage of the PyTorch SDPA math kernel:
+
+```shell
+accelerate launch --config_file accelerate_config.yaml scripts/sdpa/math_kernel.py
+```
+
 ## Topics
 
 - ZeRO optimizer
 - DeepSpeed
 - FSDP
-- Flash Atttention v2
+
+### Flash Attention
+
+From [attention optimizations](https://huggingface.co/docs/transformers/llm_optims#attention-optimizations):
+
+> FlashAttention and FlashAttention-v2 break up the attention computation into smaller chunks and reduce the number of intermediate read/write operations to GPU memory to speed up inference (and training). FlashAttention-2 improves on the original FlashAttention algorithm by also parallelizing over sequence length dimension and better partitioning work on the hardware to reduce synchronization and communication overhead.
+
+From [GPU inference](https://huggingface.co/docs/transformers/perf_infer_gpu_one?install=NVIDIA#expected-speedups):
+
+> FlashAttention-2 does not support computing attention scores with padding tokens. You must manually pad/unpad the attention scores for batched inference when the sequence contains padding tokens. This leads to a significant slowdown for batched generations with padding tokens. To overcome this, you should use FlashAttention-2 without padding tokens in the sequence during training (by packing a dataset or concatenating sequences until reaching the maximum sequence length).
+
+PyTorch SDPA with Flash Attention v2 is used by default with `torch>=2.1.1`
 
 ### LoRA and QLoRA
 
@@ -99,8 +127,15 @@ GaLore can be configured in `TrainingArguments` as described [here](https://hugg
 - accelerate
 - peft
 - trl
+- optimum
 
-## Articles
+## References
 
-- https://www.philschmid.de/fsdp-qlora-llama3
-- https://www.answer.ai/posts/2024-03-06-fsdp-qlora.html
+### Guides
+
+- [Model training anatomy](https://huggingface.co/docs/transformers/main/en/model_memory_anatomy)
+
+### Articles
+
+- [Efficiently fine-tune Llama 3 with PyTorch FSDP and Q-Lora](https://www.philschmid.de/fsdp-qlora-llama3)
+- [You can now train a 70b language model at home](https://www.answer.ai/posts/2024-03-06-fsdp-qlora.html)
