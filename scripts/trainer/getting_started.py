@@ -1,5 +1,5 @@
 # https://huggingface.co/docs/transformers/quicktour#trainer---a-pytorch-optimized-training-loop
-# https://huggingface.co/docs/transformers/v4.41.3/en/training#train-with-pytorch-trainer
+# https://huggingface.co/docs/transformers/training#train-with-pytorch-trainer
 
 import evaluate
 import numpy as np

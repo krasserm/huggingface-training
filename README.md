@@ -41,8 +41,8 @@ accelerate launch --config_file accelerate_config.yaml scripts/trainer/advanced_
 A `Trainer` can be customized
 
 - with `TrainingArguments`
-- via [subclassing](https://huggingface.co/docs/transformers/v4.41.3/en/trainer#customize-the-trainer)
-- via [callbacks](https://huggingface.co/docs/transformers/v4.41.3/en/trainer#callbacks)
+- via [subclassing](https://huggingface.co/docs/transformers/trainer#customize-the-trainer)
+- via [callbacks](https://huggingface.co/docs/transformers/en/trainer#callbacks)
 
 ### Custom training loop
 
@@ -86,6 +86,8 @@ Implementation-wise, LoRA by default adds adapters for `q_proj` and `v_proj` onl
 [Gradient Low-Rank Projection](https://arxiv.org/abs/2403.03507) (GaLore) is a memory-efficient low-rank training strategy that allows **full-parameter learning** but is more memory-efficient than common low-rank adaptation methods, such as LoRA. GaLore leverages the slow-changing low-rank structure of the gradient G of a weight matrix W, rather than trying to approximate the weight matrix itself as low rank (as in LoRA).
 
 Projection matrices P and Q project gradient matrix G into a low-rank form (P.T)GQ which reduces the memory cost of optimizer states. Because of the slow-changing low-rank structure of G, projection matrices P and Q must only be updated every e.g. 200 iterations which incurs minimal computational overhead.
+
+GaLore can be configured in `TrainingArguments` as described [here](https://huggingface.co/docs/transformers/trainer#galore).
 
 ### NEFTune
 

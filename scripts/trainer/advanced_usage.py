@@ -1,4 +1,4 @@
-# https://huggingface.co/docs/transformers/v4.41.3/en/trainer
+# https://huggingface.co/docs/transformers/trainer
 
 import evaluate
 import numpy as np

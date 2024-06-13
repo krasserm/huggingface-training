@@ -1,4 +1,4 @@
-# https://huggingface.co/docs/transformers/v4.41.3/en/training#train-in-native-pytorch
+# https://huggingface.co/docs/transformers/training#train-in-native-pytorch
 
 import evaluate
 import torch
