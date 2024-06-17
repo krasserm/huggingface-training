@@ -13,15 +13,15 @@ from transformers import (
 
 
 def main():
-    repo_id = "google-bert/bert-base-cased"
-    output_path = "output/trainer/advanced_usage"
+    repo_id = "facebook/opt-350m"
+    output_path = "output/trainer/sharded/fsdp"
 
     model = AutoModelForSequenceClassification.from_pretrained(repo_id, num_labels=5)
     tokenizer = AutoTokenizer.from_pretrained(repo_id)
     metric = evaluate.load("accuracy")
 
     collator = DataCollatorWithPadding(tokenizer=tokenizer)
-    dataset = DatasetDict.load_from_disk("data/yelp_review_bert")
+    dataset = DatasetDict.load_from_disk("data/yelp_review_opt")
 
     def compute_metrics(eval_pred):
         logits, labels = eval_pred
@@ -55,6 +55,10 @@ def main():
     )
 
     trainer.train()
+
+    if trainer.is_fsdp_enabled:
+        trainer.accelerator.state.fsdp_plugin.set_state_dict_type("FULL_STATE_DICT")
+
     trainer.save_model(output_path)
 
 

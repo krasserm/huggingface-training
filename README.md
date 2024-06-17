@@ -79,17 +79,28 @@ Examples how to enforce usage of different scaled dot product attention (SDPA) i
 accelerate launch --config_file accelerate_config.yaml scripts/sdpa/flash_attention.py
 ```
 
-This one enforces usage of the PyTorch SDPA math kernel:
+This one enforces usage of the PyTorch SDPA "math" implementation:
 
 ```shell
 accelerate launch --config_file accelerate_config.yaml scripts/sdpa/math_kernel.py
 ```
 
+See [https://pytorch.org/blog/out-of-the-box-acceleration/#flash-attention-memory-efficient-attention--math-differences](https://pytorch.org/blog/out-of-the-box-acceleration/#flash-attention-memory-efficient-attention--math-differences) for an overview of PyTorch SDPA implementations.
+
 ## Topics
 
-- ZeRO optimizer
-- DeepSpeed
-- FSDP
+### FSDP
+
+[Fully Sharded Data Parallel](https://pytorch.org/blog/introducing-pytorch-fully-sharded-data-parallel-api/) (FSDP) is a data parallel method that shards a model’s parameters, gradients and optimizer states across the number of available GPUs. It is very similar to [DeepSpeed ZeRO](https://deepspeed.readthedocs.io/en/latest/zero3.html) stage 3.
+
+### DeepSpeed
+
+From Hugging Face [DeepSpeed](https://huggingface.co/docs/transformers/main/en/main_classes/deepspeed) documentation:
+
+> [DeepSpeed](https://github.com/microsoft/DeepSpeed), powered by [Zero Redundancy Optimizer](https://deepspeed.readthedocs.io/en/latest/zero3.html) (ZeRO), is an optimization library for training and fitting very large models onto a GPU. It is available in several ZeRO stages, where each stage progressively saves more GPU memory by partitioning the optimizer state, gradients, parameters, and enabling offloading to a CPU or NVMe.
+
+- [DeepSpeed with Trainer](https://huggingface.co/docs/transformers/main/en/deepspeed)
+- [DeepSpeed with Accelerate](https://huggingface.co/docs/accelerate/en/usage_guides/deepspeed)
 
 ### Flash Attention
 
@@ -121,21 +132,21 @@ GaLore can be configured in `TrainingArguments` as described [here](https://hugg
 
 [NEFTune](https://arxiv.org/abs/2310.05914) is a technique that can improve performance by adding noise to the embedding vectors during training. It can be enabled by setting `neftune_noise_alpha` in `TrainingArguments`.
 
-## Resources
+## Further references
+
+### Articles
+
+- [Efficiently fine-tune Llama 3 with PyTorch FSDP and Q-Lora](https://www.philschmid.de/fsdp-qlora-llama3)
+- [You can now train a 70b language model at home](https://www.answer.ai/posts/2024-03-06-fsdp-qlora.html)
+
+### Guides
+
+- [Model training anatomy](https://huggingface.co/docs/transformers/main/en/model_memory_anatomy)
+
+## Libraries
 
 - transformers
 - accelerate
 - peft
 - trl
 - optimum
-
-## References
-
-### Guides
-
-- [Model training anatomy](https://huggingface.co/docs/transformers/main/en/model_memory_anatomy)
-
-### Articles
-
-- [Efficiently fine-tune Llama 3 with PyTorch FSDP and Q-Lora](https://www.philschmid.de/fsdp-qlora-llama3)
-- [You can now train a 70b language model at home](https://www.answer.ai/posts/2024-03-06-fsdp-qlora.html)
