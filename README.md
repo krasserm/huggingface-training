@@ -71,7 +71,7 @@ accelerate launch --config_file accelerate_config.yaml scripts/lora/custom_loop_
 
 This uses DDP to train the model (DeepSpeed or FSDP are not enabled in `accelerate_config.yaml`)
 
-## Attention
+### Attention implementations
 
 Examples how to enforce usage of different scaled dot product attention (SDPA) implementations. The following enforces usage of the [FlashAttention-2](https://github.com/Dao-AILab/flash-attention) implementation:
 
@@ -86,6 +86,26 @@ accelerate launch --config_file accelerate_config.yaml scripts/sdpa/math_kernel.
 ```
 
 See [https://pytorch.org/blog/out-of-the-box-acceleration/#flash-attention-memory-efficient-attention--math-differences](https://pytorch.org/blog/out-of-the-box-acceleration/#flash-attention-memory-efficient-attention--math-differences) for an overview of PyTorch SDPA implementations.
+
+### Sharding strategies
+
+FSDP training example:
+
+```shell
+accelerate launch --config_file accelerate_config_fsdp.yaml scripts/trainer/sharded/fsdp.py
+```
+
+The next example is a DeepSpeed ZeRO 3 training example. Although DeepSpeed can also be configured with an `accelerate` config file via the [Accelerate DeepSpeed Plugin](https://huggingface.co/docs/accelerate/usage_guides/deepspeed#accelerate-deepspeed-plugin) the following uses a DeepSpeed [configuration file](deepspeed_config.json), referenced in `TrainingArguments` in [zero.py](scripts/trainer/sharded/zero.py). Using a DeepSpeed configuration file provides more flexibility and [configuration options](https://www.deepspeed.ai/docs/config-json/). Training can either be launched with `accelerate`
+
+```shell
+accelerate launch --config_file accelerate_config.yaml scripts/trainer/sharded/zero.py
+```
+
+or with the `deepspeed` launcher:
+
+```shell
+deepspeed scripts/trainer/sharded/zero.py
+```
 
 ## Topics
 

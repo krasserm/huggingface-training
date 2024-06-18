@@ -1,5 +1,5 @@
 # https://huggingface.co/docs/transformers/trainer
-# https://huggingface.co/docs/transformers/fsdp
+# https://huggingface.co/docs/transformers/deepspeed
 
 import evaluate
 import numpy as np
@@ -15,9 +15,8 @@ from transformers import (
 
 def main():
     repo_id = "facebook/opt-350m"
-    output_path = "output/trainer/sharded/fsdp"
+    output_path = "output/trainer/sharded/zero"
 
-    model = AutoModelForSequenceClassification.from_pretrained(repo_id, num_labels=5)
     tokenizer = AutoTokenizer.from_pretrained(repo_id)
     metric = evaluate.load("accuracy")
 
@@ -34,14 +33,21 @@ def main():
         learning_rate=2e-5,
         per_device_train_batch_size=8,
         per_device_eval_batch_size=8,
-        num_train_epochs=3,
+        num_train_epochs=1,
         save_total_limit=2,
         save_strategy="epoch",
         eval_strategy="epoch",
         load_best_model_at_end=True,
         metric_for_best_model="accuracy",
-        dataloader_num_workers=2,  # this defaults to 0
+        dataloader_num_workers=2,
+        deepspeed="deepspeed_config.json",
+        gradient_checkpointing=True,
+        max_grad_norm=1.0,
+        fp16=True,
     )
+
+    # With deepspeed configured, model must be loaded after instantiating training args
+    model = AutoModelForSequenceClassification.from_pretrained(repo_id, num_labels=5)
 
     trainer = Trainer(
         model=model,
@@ -54,10 +60,6 @@ def main():
     )
 
     trainer.train()
-
-    if trainer.is_fsdp_enabled:
-        trainer.accelerator.state.fsdp_plugin.set_state_dict_type("FULL_STATE_DICT")
-
     trainer.save_model(output_path)
 
 
