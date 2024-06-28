@@ -95,6 +95,12 @@ FSDP training example:
 accelerate launch --config_file accelerate_config_fsdp.yaml scripts/trainer/sharded/fsdp.py
 ```
 
+FSDP with LoRA training example:
+
+```shell
+accelerate launch --config_file accelerate_config_fsdp_lora.yaml scripts/trainer/sharded/fsdp_lora.py
+```
+
 The next example is a DeepSpeed ZeRO 3 training example. Although DeepSpeed can also be configured with an `accelerate` config file via the [Accelerate DeepSpeed Plugin](https://huggingface.co/docs/accelerate/usage_guides/deepspeed#accelerate-deepspeed-plugin) the following uses a DeepSpeed [configuration file](deepspeed_config.json), referenced in `TrainingArguments` in [zero.py](scripts/trainer/sharded/zero.py). Using a DeepSpeed configuration file provides more flexibility and [configuration options](https://www.deepspeed.ai/docs/config-json/). Training can either be launched with `accelerate`
 
 ```shell
@@ -111,7 +117,7 @@ deepspeed scripts/trainer/sharded/zero.py
 
 ### FSDP
 
-[Fully Sharded Data Parallel](https://pytorch.org/blog/introducing-pytorch-fully-sharded-data-parallel-api/) (FSDP) is a data parallel method that shards a model’s parameters, gradients and optimizer states across the number of available GPUs. It is very similar to [DeepSpeed ZeRO](https://deepspeed.readthedocs.io/en/latest/zero3.html) stage 3.
+[Fully Sharded Data Parallel](https://pytorch.org/blog/introducing-pytorch-fully-sharded-data-parallel-api/) (FSDP) is a data parallel method that shards a model’s parameters, gradients and optimizer states across the number of available GPUs. It is very similar to [DeepSpeed ZeRO](https://deepspeed.readthedocs.io/en/latest/zero3.html) stage 3. See also [Fully Sharded Data Parallelism](https://blog.clika.io/fsdp-1/) for an introduction to FSDP and [Efficiently fine-tune Llama 3 with PyTorch FSDP and Q-Lora](https://www.philschmid.de/fsdp-qlora-llama3) for combining FSDP with QLoRA.
 
 ### DeepSpeed
 
@@ -151,22 +157,3 @@ GaLore can be configured in `TrainingArguments` as described [here](https://hugg
 ### NEFTune
 
 [NEFTune](https://arxiv.org/abs/2310.05914) is a technique that can improve performance by adding noise to the embedding vectors during training. It can be enabled by setting `neftune_noise_alpha` in `TrainingArguments`.
-
-## Further references
-
-### Articles
-
-- [Efficiently fine-tune Llama 3 with PyTorch FSDP and Q-Lora](https://www.philschmid.de/fsdp-qlora-llama3)
-- [You can now train a 70b language model at home](https://www.answer.ai/posts/2024-03-06-fsdp-qlora.html)
-
-### Guides
-
-- [Model training anatomy](https://huggingface.co/docs/transformers/main/en/model_memory_anatomy)
-
-## Libraries
-
-- transformers
-- accelerate
-- peft
-- trl
-- optimum
