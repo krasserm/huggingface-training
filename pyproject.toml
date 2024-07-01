@@ -13,6 +13,7 @@ authors = ["Martin Krasser <krasserm@googlemail.com>"]
 
 [tool.poetry.dependencies]
 accelerate = "^0.31.0"
+bitsandbytes = "^0.43.1"
 datasets = "^2.19"
 deepspeed = "^0.14.2"
 evaluate = "^0.4.2"

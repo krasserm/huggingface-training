@@ -19,11 +19,11 @@ export PYTHONPATH=.
 
 ## Examples
 
-Documentation links are on top of example scripts.
+Documentation links are at the top of example scripts.
 
 ### Trainer class
 
-For basic `Trainer` usage run:
+Basic `Trainer` usage:
 
 ```shell
 python scripts/trainer/getting_started.py
@@ -35,7 +35,7 @@ This trains the model on all available GPUs using PyTorch DP. To use PyTorch DDP
 accelerate launch --config_file accelerate_config.yaml scripts/trainer/getting_started.py
 ```
 
-An example of more advanced `Trainer` usage is:
+A more advanced `Trainer` usage example is:
 
 ```shell
 accelerate launch --config_file accelerate_config.yaml scripts/trainer/advanced_usage.py
@@ -52,7 +52,7 @@ A `Trainer` can be customized
 Demonstrates how to implement a custom training loop. First prepare a dataset:
 
 ```shell
-python scripts/custom_loop_dataset.py
+python scripts/prepare_datasets.py
 ```
 
 Run training on single GPU:
@@ -69,11 +69,11 @@ accelerate launch --config_file accelerate_config.yaml scripts/basic/custom_loop
 accelerate launch --config_file accelerate_config.yaml scripts/lora/custom_loop_accelerate.py
 ```
 
-This uses DDP to train the model (DeepSpeed or FSDP are not enabled in `accelerate_config.yaml`)
+This uses DDP to train the model.
 
 ### Attention implementations
 
-Examples how to enforce usage of different scaled dot product attention (SDPA) implementations. The following enforces usage of the [FlashAttention-2](https://github.com/Dao-AILab/flash-attention) implementation:
+Examples how to enforce usage of different scaled dot product attention (SDPA) implementations. The following example enforces usage of the [FlashAttention-2](https://github.com/Dao-AILab/flash-attention) implementation:
 
 ```shell
 accelerate launch --config_file accelerate_config.yaml scripts/sdpa/flash_attention.py
@@ -85,7 +85,7 @@ This one enforces usage of the PyTorch SDPA "math" implementation:
 accelerate launch --config_file accelerate_config.yaml scripts/sdpa/math_kernel.py
 ```
 
-See [https://pytorch.org/blog/out-of-the-box-acceleration/#flash-attention-memory-efficient-attention--math-differences](https://pytorch.org/blog/out-of-the-box-acceleration/#flash-attention-memory-efficient-attention--math-differences) for an overview of PyTorch SDPA implementations.
+See [this section](https://pytorch.org/blog/out-of-the-box-acceleration/#flash-attention-memory-efficient-attention--math-differences) for an overview of PyTorch SDPA implementations.
 
 ### Sharding strategies
 
@@ -101,7 +101,13 @@ FSDP with LoRA training example:
 accelerate launch --config_file accelerate_config_fsdp_lora.yaml scripts/trainer/sharded/fsdp_lora.py
 ```
 
-The next example is a DeepSpeed ZeRO 3 training example. Although DeepSpeed can also be configured with an `accelerate` config file via the [Accelerate DeepSpeed Plugin](https://huggingface.co/docs/accelerate/usage_guides/deepspeed#accelerate-deepspeed-plugin) the following uses a DeepSpeed [configuration file](deepspeed_config.json), referenced in `TrainingArguments` in [zero.py](scripts/trainer/sharded/zero.py). Using a DeepSpeed configuration file provides more flexibility and [configuration options](https://www.deepspeed.ai/docs/config-json/). Training can either be launched with `accelerate`
+FSDP with QLoRA training example:
+
+```shell
+accelerate launch --config_file accelerate_config_fsdp_qlora.yaml scripts/trainer/sharded/fsdp_qlora.py
+```
+
+The next example is a DeepSpeed ZeRO 3 training example. DeepSpeed can either be configured with an `accelerate` config file via the [Accelerate DeepSpeed Plugin](https://huggingface.co/docs/accelerate/usage_guides/deepspeed#accelerate-deepspeed-plugin) or a DeepSpeed [configuration file](deepspeed_config.json) referenced by `TrainingArguments` in [zero.py](scripts/trainer/sharded/zero.py). A DeepSpeed configuration file provides more flexibility and [configuration options](https://www.deepspeed.ai/docs/config-json/). Training can either be launched with `accelerate`
 
 ```shell
 accelerate launch --config_file accelerate_config.yaml scripts/trainer/sharded/zero.py
